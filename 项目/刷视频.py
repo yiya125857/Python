@@ -7,16 +7,22 @@ import sys  #结束程序
 class DouYin(object):
      
 
-     def __init__(self,app,tb,x,t,rang):
+     def __init__(self,app,tb,x,t,rang,ip):
           self.rang=rang
           self.tb=tb  #定时
           self.bool = app#判断哪个app
+          self.ip=ip
           c=["com.kuaishou.nebula/com.yxcorp.gifshow.HomeActivity" , "com.ss.android.ugc.aweme.lite/com.ss.android.ugc.aweme.main.MainActivity"]
           self.app= c[app]  
           self.a = 1080 #屏幕x
           self.b = 2244 #屏幕y
           self.x = x #回刷参数
           self.t = t #视频观看时长
+
+     def connect(self):
+          run('adb tcpip 5555',shell=True)
+          run("adb connect {}".format(self.ip),shell=True)
+          
      def Shibie(self):
           from aip import AipOcr
           try:
@@ -32,7 +38,7 @@ class DouYin(object):
                else:
                     None
           except Exception as e:
-               print(e+"截屏失败")
+               print("截屏失败")
           """ 你的 APPID AK SK """
           """请修改成你的"""
           APP_ID = '18787824'
@@ -51,7 +57,7 @@ class DouYin(object):
           try:
                for i in x:
                     t=i["words"]
-               z=0#<<<<<<<<<<<<<<<<<<<<<
+               z=0
                if t:
                     if t[-1] == "w" or t[-1] == "W":
                          z = int(re.sub("\D", "", t))*1000
@@ -61,7 +67,8 @@ class DouYin(object):
                else:
                     None
           except Exception as e:
-               print(e)
+               print("获取赞失败")
+               run('adb shell input swipe {} 200'.format("{0} {1} {2} {3}".format(self.a-10,round(self.b/2),round(self.a/2),round(selg.b/2))),shell=True)
           
           return z
      def DianZan(self):#点赞坐标获取
@@ -91,7 +98,7 @@ class DouYin(object):
           except IndexError as e:
                print("请检查 设备连接/开发者模式/USB调试")
                sys.exit(1)
-               
+          
      def Box(self):#定时box
           if self.bool == 0:
                return None
@@ -115,7 +122,7 @@ class DouYin(object):
           startime=time.time()
 
           while True:
-##               try:
+               try:
                     if random.randrange(0,self.x,1) == 1:  ##1/5概率往回刷
                          
                          for i in range(random.randint(1,3)):  ##回刷几次
@@ -162,11 +169,12 @@ class DouYin(object):
                               else:
                                    None
                                         
-##               except Exception as e:
-##                    print(e)                 
+               except Exception as e:
+                    print("出现错误")                 
                     
          
      def main(self):
+          m.connect()
           m.Start()
           m.GetWm()
           m.Box()
@@ -177,6 +185,7 @@ if __name__ == '__main__':
           tb=120,      #定时,单位分钟
           x=5,         #1/5概率回刷，防止封号
           t=10,        #一个视频大概看10s
+          ip="192.168.0.101",#无线连接,不需要usb线    手机ip
           rang=(10000,100000),  #赞在10000—100000点赞
           app=0,       #app代码  0：快手  1：抖音  <<<<<<<<<<<<<<<<<<<<<<<<<<<<一定要设置好
           #打开开发者模式，指针位置 点在赞的位置查看
