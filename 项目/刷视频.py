@@ -20,9 +20,12 @@ class DouYin(object):
           self.t = t #视频观看时长
 
      def connect(self):
-          run('adb tcpip 5555',shell=True)
-          run("adb connect {}".format(self.ip),shell=True)
-          
+
+          if self.ip :
+               run('adb tcpip 5555',shell=True)
+               run("adb connect {}".format(self.ip),shell=True)
+          else:
+               run("adb disconnect {}".format(self.ip),shell=True)
      def Shibie(self):
           from aip import AipOcr
           try:
@@ -85,7 +88,7 @@ class DouYin(object):
           
      def GetWm(self):#获取屏幕尺寸
           try:
-               #print(os.popen("adb devices").read())#获取设备id
+          #print(os.popen("adb devices").read())#获取设备id
 
                wm=os.popen("adb shell wm size").read()#获取回应
                x=wm.strip().split(": ")[-1].split("x")
@@ -152,7 +155,7 @@ class DouYin(object):
                               
                               
                               (x1,x2)=self.rang
-                              
+          
                               t=m.Shibie ()
                               if  t>=x1 and t<=x2:
 ##                              if random.randint(1,3) == 0: #1/3点赞概率
@@ -185,9 +188,10 @@ if __name__ == '__main__':
           tb=120,      #定时,单位分钟
           x=5,         #1/5概率回刷，防止封号
           t=10,        #一个视频大概看10s
-          ip="192.168.0.101",#无线连接,不需要usb线    手机ip
           rang=(10000,100000),  #赞在10000—100000点赞
-          app=0,       #app代码  0：快手  1：抖音  <<<<<<<<<<<<<<<<<<<<<<<<<<<<一定要设置好
+          app=0  ,     #app代码  0：快手  1：抖音  <<<<<<<<<<<<<<<<<<<<<<<<<<<<一定要设置好
+          ip="192.168.0.101",#无线连接,不需要usb线，需要先插线启动程序之后拔掉线启动程序    手机ip
+          
           #打开开发者模式，指针位置 点在赞的位置查看
           )
 
